@@ -1,4 +1,4 @@
 test = 12
 
-def testing:
+def testing():
     test = "abc"
