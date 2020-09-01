@@ -1,3 +1,5 @@
+"""This module is used to test the linter, it should succeed."""
+
 TEST = 12
 
 
