@@ -25,9 +25,9 @@ jobs:
         # A list of all paths to test
         python-root-list: . # optional, default is .
         # Use Pylint
-        use-pylint: true # optional, default is true
+        use-pylint: false # optional, default is true
         # Use pycodestyle
-        use-pycodestyle: true # optional, default is true
+        use-pycodestyle: false # optional, default is true
         # Use Flake8
         use-flake8: true # optional, default is true
         # Use Black
