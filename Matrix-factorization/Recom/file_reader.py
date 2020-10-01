@@ -27,7 +27,6 @@ def matrix_factorization(pd_matrix):
         for i in range(number_of_users):
             for j in range(number_of_movies):
                 if (numpy_matrix[i][j]) > 0:
-                    print(numpy_matrix[i][j])
                     error = numpy_matrix[i][j] - np.dot(user_features[i, :],
                                                         movie_features[:, j])
 
