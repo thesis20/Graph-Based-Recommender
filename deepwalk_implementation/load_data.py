@@ -1,5 +1,4 @@
 import pandas as pd
-import numpy as np
 
 
 def read_data():
@@ -13,10 +12,5 @@ def read_data():
     edge_list = []
     for index, row in merged_table.iterrows():
         edge_list.append((row['movieId'], row['userId']))
-        
 
     return edge_list
-
-
-
-
