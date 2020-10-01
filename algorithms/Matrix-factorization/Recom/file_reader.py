@@ -2,6 +2,7 @@ import pandas as pd
 import numpy as np
 from dataloaders import movielens_data as loader
 
+
 def get_data():
     movies, ratings = loader.load_data()
     movie_data = pd.merge(ratings, movies, on='movieId')
