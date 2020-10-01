@@ -3,9 +3,10 @@ import numpy as np
 
 
 def read_data():
-    movie_data = pd.read_csv('../dataset/ml-latest-small/movies.csv')
+    # ml-latest-small must be in the same folder as the program
+    movie_data = pd.read_csv('ml-latest-small/movies.csv')
 
-    rating_data = pd.read_csv('../dataset/ml-latest-small/ratings.csv')
+    rating_data = pd.read_csv('ml-latest-small/ratings.csv')
 
     merged_table = pd.merge(movie_data, rating_data, on='movieId')
 
