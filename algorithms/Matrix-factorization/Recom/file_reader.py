@@ -1,10 +1,9 @@
 import pandas as pd
 import numpy as np
+from dataloaders import movielens_data as loader
 
-
-def load_data():
-    movies = pd.read_csv('movies.csv', sep=',')
-    ratings = pd.read_csv('ratings.csv', sep=',')
+def get_data():
+    movies, ratings = loader.load_data()
     movie_data = pd.merge(ratings, movies, on='movieId')
     user_movie_rating = movie_data.pivot_table(index='userId', columns='title',
                                                values='rating')
@@ -60,7 +59,7 @@ def matrix_factorization(pd_matrix):
 
 
 def main():
-    movie_data = load_data()
+    movie_data = get_data()
     recom = matrix_factorization(movie_data)
     return recom
 
