@@ -12,7 +12,6 @@ def deep_walk(edge_list, window_size, embedding_size, wpv, wl, lr=0.025):
 
     adjacency_dict_movie, adjacency_dict_user = make_adjacency_list(edge_list)
 
-    all_vertices = []
     all_vertices = list(zip(adjacency_dict_movie.keys(), ['m']
                             * len(adjacency_dict_movie)))
     all_vertices += list(zip(adjacency_dict_user.keys(), ['u']
@@ -30,8 +29,8 @@ def deep_walk(edge_list, window_size, embedding_size, wpv, wl, lr=0.025):
             f.write('\n')
         f.close()
 
+    all_vertices_shuffled = all_vertices.copy()
     for _ in range(wpv):
-        all_vertices_shuffled = all_vertices.copy()
         random.shuffle(all_vertices_shuffled)
 
         for v in all_vertices_shuffled:
@@ -65,28 +64,6 @@ def skip_gram(random_walk, window_size, phi, all_vertices, leaves):
 
 def sigmoid(x):
     return 1/(1 + np.exp(-x))
-
-
-def get_node_n(root, j):
-    li = [root]
-    while(root != 1):
-        root = root//2
-        li.append(root)
-
-    li.reverse()
-
-    return li[j]
-
-
-"""
-def get_vector(index):
-    file = open("output.txt")
-    for i, line in enumerate(file):
-        if i == index:
-            linesplit = line.split()
-            return np.asarray(linesplit, dtype=float)
-"""
-
 
 def random_walk(adjacency_dict_user, adjacency_dict_movie, v, walk_length):
     if v[1] == 'u':
