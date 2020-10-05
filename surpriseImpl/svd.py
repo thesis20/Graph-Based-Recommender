@@ -20,8 +20,8 @@ def custom_pandas_100k():
 
     # Ratings data is reordered such that it fits Surprise - item, rating, user
     ratings_frame = ratings[['userId', 'movieId', 'rating']]
-    
-    # Reader is a Surpise class that is necessary for parsing files
+
+    # Reader is a Surprise class that is necessary for parsing files
     # For pandas dataframes, it simply requires a rating scale.
     # The scale in this case is 1-5.
     reader = Reader(rating_scale=(1, 5))
