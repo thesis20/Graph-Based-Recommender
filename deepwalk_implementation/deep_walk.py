@@ -1,151 +1,78 @@
 import numpy as np
-from load_data import read_data
-import os.path
-import networkx as nx
 import random
-from binary_tree import Node
+
+# import networkx as nx
+# from gensim.models import Word2Vec, KeyedVectors
+from dataloaders import movielens_data as loader
 
 
-def deep_walk(edge_list, window_size, embedding_size, wpv, wl, lr=0.025):
-    g = nx.Graph()
-    g.add_edges_from(edge_list)
+class DeepWalk():
 
-    adjacency_dict_movie, adjacency_dict_user = make_adjacency_list(edge_list)
+    def __init__(self, window_size, embedding_size, walk_per_vertex,
+                 walk_length):
+        self.window_size = window_size
+        self.embedding_size = embedding_size
+        self.walk_per_vertex = walk_per_vertex
+        self.walk_length = walk_length
 
-    all_vertices = []
-    all_vertices = list(zip(adjacency_dict_movie.keys(), ['m']
-                            * len(adjacency_dict_movie)))
-    all_vertices += list(zip(adjacency_dict_user.keys(), ['u']
-                             * len(adjacency_dict_user)))
+    def train(self, graph):
+        walks = self.do_random_walks(graph)
+        walks = [[str(node) for node in walk] for walk in walks]
 
-    binary_tree_root, leaves = build_binary_tree(all_vertices)
+    def random_walk(self, node, graph):
+        walk = [node]
+        while len(walk) < self.walk_length:
+            current_node = walk[-1]
+            current_node_neighbors = graph.neighbors(current_node)
+            if len(current_node_neighbors) == 0:
+                break
+            else:
+                index = int(np.floor(np.random.rand()
+                                     * len(current_node_neighbors)))
+                walk.append(current_node_neighbors[index])
+        return walk
 
-    phi = np.random.uniform(size=(len(all_vertices), embedding_size))
+    def do_random_walks(self, graph):
+        walks = []
+        all_nodes = list(graph.nodes())
 
-    if not os.path.exists('output.txt'):
-        f = open('output.txt', 'w')
-        for _ in range(len(all_vertices)):
-            for _ in range(embedding_size):
-                f.write(str(random.random()) + ' ')
-            f.write('\n')
-        f.close()
-
-    for _ in range(wpv):
-        all_vertices_shuffled = all_vertices.copy()
-        random.shuffle(all_vertices_shuffled)
-
-        for v in all_vertices_shuffled:
-            rw = random_walk(adjacency_dict_user, adjacency_dict_movie, v, wl)
-            prob = skip_gram(rw, window_size, phi, all_vertices, leaves)
-            loss = -np.log(prob)
-            print(loss)
-
-
-def skip_gram(random_walk, window_size, phi, all_vertices, leaves):
-    prob = 1.0
-    for index, v in enumerate(random_walk):
-        one_hot = np.zeros(phi.shape[0])
-        one_hot[all_vertices.index(v)] = 1
-        row_rep = np.dot(one_hot, phi)
-
-        for u in range(max(0, index - window_size),
-                       min(index + window_size, len(random_walk))):
-            # find leaf for the vertex
-            node = next(x for x in leaves if x.data == random_walk[u])
-
-            while node.parent is not None:
-                parent = node.parent
-                if parent.left is node:
-                    prob = prob * sigmoid(parent.probability[0] * row_rep)
-                else:
-                    prob = prob * sigmoid(parent.probability[1] * row_rep)
-                node = parent
-    return prob
+        for walk_count in range(self.walk_per_vertex):
+            random.shuffle(all_nodes)
+            for node in all_nodes:
+                walks.append(self.random_walk(node, graph))
+        return walks
 
 
-def sigmoid(x):
-    return 1/(1 + np.exp(-x))
+""" 
+    def build_binary_tree(self, vertices):
+        nodes = []
+        for v in vertices:
+            nodes.append(Node(v))
+        leaves = nodes.copy()
+
+        while len(nodes) > 1:
+            left = nodes.pop(0)
+            right = nodes.pop(0)
+            probability = np.random.uniform()
+            node = Node(None, (probability, 1 - probability), left, right)
+            left.parent = node
+            right.parent = node
+            nodes.append(node)
+
+        self.calculate_tree_depth(nodes[0])
+        return nodes.pop(), leaves
 
 
-def get_node_n(root, j):
-    li = [root]
-    while(root != 1):
-        root = root//2
-        li.append(root)
+    def calculate_tree_depth(self, node, depth=1):
+        node.depth = depth
+        if node.left is not None:
+            calculate_tree_depth(node.left, depth + 1)
+        if node.right is not None:
+            calculate_tree_depth(node.right, depth + 1)
+ """
 
-    li.reverse()
+graph = loader.generate_bipartite_graph(loader.load_data())
 
-    return li[j]
+deep_walk = DeepWalk()
 
-
-"""
-def get_vector(index):
-    file = open("output.txt")
-    for i, line in enumerate(file):
-        if i == index:
-            linesplit = line.split()
-            return np.asarray(linesplit, dtype=float)
-"""
-
-
-def random_walk(adjacency_dict_user, adjacency_dict_movie, v, walk_length):
-    if v[1] == 'u':
-        neighbours = adjacency_dict_user[v[0]]
-    else:
-        neighbours = adjacency_dict_movie[v[0]]
-
-    if walk_length == 0:
-        return (v,)
-    else:
-        return (v,) + random_walk(adjacency_dict_user, adjacency_dict_movie,
-                                  random.choice(neighbours), walk_length - 1)
-
-
-def make_adjacency_list(edge_list):
-    adjacency_dict_movie = {}
-    adjacency_dict_user = {}
-
-    for e in edge_list:
-        if e[0] not in adjacency_dict_movie:
-            adjacency_dict_movie[e[0]] = [(e[1], 'u')]
-        else:
-            adjacency_dict_movie[e[0]].append((e[1], 'u'))
-
-        if e[1] not in adjacency_dict_user:
-            adjacency_dict_user[e[1]] = [(e[0], 'm')]
-        else:
-            adjacency_dict_user[e[1]].append((e[0], 'm'))
-
-    return adjacency_dict_movie, adjacency_dict_user
-
-
-def build_binary_tree(vertices):
-    nodes = []
-    for v in vertices:
-        nodes.append(Node(v))
-    leaves = nodes.copy()
-
-    while len(nodes) > 1:
-        left = nodes.pop(0)
-        right = nodes.pop(0)
-        probability = np.random.uniform()
-        node = Node(None, (probability, 1 - probability), left, right)
-        left.parent = node
-        right.parent = node
-        nodes.append(node)
-
-    calculate_tree_depth(nodes[0])
-    return nodes.pop(), leaves
-
-
-def calculate_tree_depth(node, depth=1):
-    node.depth = depth
-    if node.left is not None:
-        calculate_tree_depth(node.left, depth + 1)
-    if node.right is not None:
-        calculate_tree_depth(node.right, depth + 1)
-
-
-edge_list = read_data()
-
-deep_walk(edge_list, 2, 60, 5, 5)
+deep_walk.train(graph)
