@@ -1,7 +1,7 @@
 from collections import defaultdict
 
 
-def precision_recall_at_k(predictions, k=10, threshold= 4):
+def precision_recall_at_k(predictions, k=10, threshold=4):
     """Precision and recall at k for each user"""
 
     user_estim_true = defaultdict(list)
