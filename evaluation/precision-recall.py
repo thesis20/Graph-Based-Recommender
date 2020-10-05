@@ -6,6 +6,9 @@ def precision_recall_at_k(predictions, k=10, threshold=4):
 
     user_estim_true = defaultdict(list)
     # Dictionary of users along with a tuple defining estimated and true rating
+    # This is based on predictions from Surprise, which is a tuple of the
+    # following: user id, item id, true rating, estimated rating and finally
+    # additional details
     for user_id, _, true_rating, estimated, _ in predictions:
         user_estim_true[user_id].append((estimated, true_rating))
 
