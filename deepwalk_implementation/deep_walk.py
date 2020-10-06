@@ -13,7 +13,7 @@ class DeepWalk():
             Parameters:
                 window_size (int): size of window when doing SkipGram
                 embedding_size (int): dimension to embed in
-                walk_per_vertex (int): random walks done for each vertex in 
+                walk_per_vertex (int): random walks done for each vertex in
                     the graph.
                 walk_length (int): the length of random walks
         """
@@ -61,7 +61,7 @@ class DeepWalk():
         return walks
 
 
-""" 
+"""
     def build_binary_tree(self, vertices):
         nodes = []
         for v in vertices:
