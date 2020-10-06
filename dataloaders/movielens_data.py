@@ -7,8 +7,8 @@ import networkx as nx
 
 def load_data():
     """Load the movielens files in and return as pds."""
-    movies = pd.read_csv('./data/movies.csv', sep=',')
-    ratings = pd.read_csv('./data/ratings.csv', sep=',')
+    movies = pd.read_csv('./data/ml-100k/movies.csv', sep=',')
+    ratings = pd.read_csv('./data/ml-100k/ratings.csv', sep=',')
 
     return movies, ratings
 
