@@ -1,6 +1,5 @@
 import numpy as np
 import random
-# import networkx as nx
 from gensim.models import Word2Vec
 from dataloaders import movielens_data as loader
 
@@ -31,6 +30,8 @@ class DeepWalk():
             window=self.window_size,
             min_count=0,  # Ignores words with frequency lower than this
             sg=1,  # Make use of skipgram
+            # It is possible to make this multithreaded through the workers
+            # parameter
         )
         id2node = dict([(id, node) for id, node in enumerate(graph.nodes())])
         embeddings = np.asarray([model.wv[id2node[i]]
@@ -61,36 +62,9 @@ class DeepWalk():
         return walks
 
 
-"""
-    def build_binary_tree(self, vertices):
-        nodes = []
-        for v in vertices:
-            nodes.append(Node(v))
-        leaves = nodes.copy()
-
-        while len(nodes) > 1:
-            left = nodes.pop(0)
-            right = nodes.pop(0)
-            probability = np.random.uniform()
-            node = Node(None, (probability, 1 - probability), left, right)
-            left.parent = node
-            right.parent = node
-            nodes.append(node)
-
-        self.calculate_tree_depth(nodes[0])
-        return nodes.pop(), leaves
-
-
-    def calculate_tree_depth(self, node, depth=1):
-        node.depth = depth
-        if node.left is not None:
-            calculate_tree_depth(node.left, depth + 1)
-        if node.right is not None:
-            calculate_tree_depth(node.right, depth + 1)
- """
 movies, ratings = loader.load_data_ml100k()
 graph = loader.generate_bipartite_graph(movies, ratings)
 
 deep_walk = DeepWalk(5, 2, 40, 80)
 
-deep_walk.train(graph)
+embeddings = deep_walk.train(graph)
