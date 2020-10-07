@@ -88,7 +88,7 @@ class DeepWalk():
         if node.right is not None:
             calculate_tree_depth(node.right, depth + 1)
  """
-movies, ratings = loader.load_data()
+movies, ratings = loader.load_data_ml100k()
 graph = loader.generate_bipartite_graph(movies, ratings)
 
 deep_walk = DeepWalk(5, 2, 40, 80)
