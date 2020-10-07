@@ -4,7 +4,7 @@ from dataloaders import movielens_data as loader
 
 
 def get_data():
-    movies, ratings = loader.load_data()
+    movies, ratings = loader.load_data_ml100k()
     movie_data = pd.merge(ratings, movies, on='movieId')
     user_movie_rating = movie_data.pivot_table(index='userId', columns='title',
                                                values='rating')
