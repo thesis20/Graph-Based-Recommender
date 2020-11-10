@@ -32,4 +32,3 @@ def calculate_map(topk_dict, relevant_dict, k_val):
             average_precisions.append(score / k_val)
 
     return (1 / number_of_users) * sum(average_precisions)
-
