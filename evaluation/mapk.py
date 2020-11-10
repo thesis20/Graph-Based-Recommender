@@ -17,10 +17,10 @@ def calculate_map(topk_dict, relevant_dict, k_val):
     score = 0.0
     hit_rate = 0.0
 
-    for index, key in enumerate(topk_dict):
+    for index, key in enumerate(topk_dict, 1):
         if key in relevant_dict:
             hit_rate += 1
-            score += hit_rate / (index + 1)
+            score += hit_rate / index
 
     if not relevant_dict:
         average_precisions.append(0.0)
