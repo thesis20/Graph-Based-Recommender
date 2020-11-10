@@ -14,21 +14,19 @@ def calculate_map(topk_dict, relevant_dict, k_val):
     """
     average_precisions = []
     number_of_users = len(topk_dict)
+    score = 0.0
+    hit_rate = 0.0
 
-    for _ in topk_dict:
-        score = 0.0
-        hit_rate = 0.0
+    for index, key in enumerate(topk_dict):
+        if key in relevant_dict:
+            hit_rate += 1
+            score += hit_rate / (index + 1)
 
-        for index, key in enumerate(topk_dict):
-            if key in relevant_dict:
-                hit_rate += 1
-                score += hit_rate / (index + 1)
-
-        if not relevant_dict:
-            average_precisions.append(0.0)
-        elif len(relevant_dict) < k_val:
-            average_precisions.append(score / len(relevant_dict))
-        else:
-            average_precisions.append(score / k_val)
+    if not relevant_dict:
+        average_precisions.append(0.0)
+    elif len(relevant_dict) < k_val:
+        average_precisions.append(score / len(relevant_dict))
+    else:
+        average_precisions.append(score / k_val)
 
     return (1 / number_of_users) * sum(average_precisions)
