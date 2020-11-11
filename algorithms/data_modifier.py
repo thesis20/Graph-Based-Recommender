@@ -6,7 +6,7 @@ class DataModifier():
     def __init__(self, data):
         self.data = data
 
-    def add_context_dependency(self, alpha=0.5, beta=0.5):
+    def add_context_dependency(self, alpha=0.5):
         """
         Adds a contextual feature for each rating.
         Ratings will be incremented or decremented based on this feature.
