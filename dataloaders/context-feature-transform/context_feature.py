@@ -2,7 +2,7 @@ import pandas as pd
 import random
 
 
-class DataModifier():
+class ContextFeature():
     def __init__(self, data):
         self.data = data
 
@@ -31,5 +31,5 @@ class DataModifier():
 
 data = pd.read_csv('data/ml-100k/ratings.csv')
 
-dm = DataModifier(data)
+dm = ContextFeature(data)
 modified_data = dm.add_context_dependency(alpha=1)
