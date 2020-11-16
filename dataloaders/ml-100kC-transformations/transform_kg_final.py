@@ -4,8 +4,8 @@ from itertools import product
 data = pd.read_csv('ml-100k/u1_context_test.csv', sep=';')
 
 items_distinct = data.movieId.unique()
-timeofday_distinct = data.timeofday.unique() # Included
-dayofweek_distinct = data.dayofweek.unique() # Included
+timeofday_distinct = data.timeofday.unique()
+dayofweek_distinct = data.dayofweek.unique()
 
 context_dimensions_product = product(timeofday_distinct, dayofweek_distinct)
 T_temp = list(product(context_dimensions_product, items_distinct))
@@ -13,7 +13,7 @@ T = {k: v for k, v in enumerate(T_temp)}
 
 items = pd.read_csv('ml-100k/u.item', sep='|',
                     names=['id', 'title', 'release', 'videorelease', 'imdb',
-                           'unknown', 'action', 'adventure','animation',
+                           'unknown', 'action', 'adventure', 'animation',
                            'childrens', 'comedy', 'crime', 'documentary',
                            'drama', 'fantasy',  'film-noir', 'horror',
                            'musical', 'mystery', 'romance', 'scifi',
