@@ -1,4 +1,3 @@
-from typing import ValuesView
 import pandas as pd
 from itertools import product
 
@@ -14,7 +13,8 @@ T = {k: v for k, v in enumerate(T_temp)}
 
 output = ""
 for i, v in T.items():
-    output += str(i) + " " + str(i) + " " + str(v[0][0]) + str(v[0][1]) + str(v[1]) + "\n"
+    output += (str(i) + " " + str(i) + " " + str(v[0][0])
+               + str(v[0][1]) + str(v[1]) + "\n")
 
 
 f = open("item_list.txt", "w")

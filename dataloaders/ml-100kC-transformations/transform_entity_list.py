@@ -1,4 +1,3 @@
-from typing import ValuesView
 import pandas as pd
 from itertools import product
 

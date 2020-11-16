@@ -1,4 +1,3 @@
-from typing import ValuesView
 import pandas as pd
 from itertools import product
 
@@ -19,7 +18,10 @@ i = 0
 for _, row in data.iterrows():
     if i % 100 == 0:
         print(f"{i} of {len(data.index)}")
-    fictive_movie_id = list(T.keys())[list(T.values()).index(((row['timeofday'], row['dayofweek']), row['movieId']))]
+    fictive_movie_id = list(T.keys())[list(T.values())
+                                      .index((
+                                          (row['timeofday'], row['dayofweek']),
+                                          row['movieId']))]
     if row['rating'] >= 3:
         if row['userId'] in user_interactions:
             user_interactions[row['userId']].append(fictive_movie_id)

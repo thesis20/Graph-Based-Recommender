@@ -11,9 +11,17 @@ context_dimensions_product = product(timeofday_distinct, dayofweek_distinct)
 T_temp = list(product(context_dimensions_product, items_distinct))
 T = {k: v for k, v in enumerate(T_temp)}
 
-items = pd.read_csv('ml-100k/u.item', sep='|', names=['id', 'title', 'release', 'videorelease', 'imdb', 'unknown', 'action', 'adventure','animation', 'childrens', 'comedy', 'crime', 'documentary', 'drama', 'fantasy',  'film-noir', 'horror', 'musical', 'mystery', 'romance', 'scifi', 'thriller', 'war', 'western'], encoding='latin-1')
-item_list = pd.read_csv('done/item_list.txt', sep=' ', names=['orig', 'remap', 'free'])
-entity_list = pd.read_csv('done/entity_list.txt', sep=' ', names=['orig_id', 'remap_id'])
+items = pd.read_csv('ml-100k/u.item', sep='|',
+                    names=['id', 'title', 'release', 'videorelease', 'imdb',
+                           'unknown', 'action', 'adventure','animation',
+                           'childrens', 'comedy', 'crime', 'documentary',
+                           'drama', 'fantasy',  'film-noir', 'horror',
+                           'musical', 'mystery', 'romance', 'scifi',
+                           'thriller', 'war', 'western'], encoding='latin-1')
+item_list = pd.read_csv('done/item_list.txt', sep=' ',
+                        names=['orig', 'remap', 'free'])
+entity_list = pd.read_csv('done/entity_list.txt', sep=' ',
+                          names=['orig_id', 'remap_id'])
 
 output = ""
 i = 0
