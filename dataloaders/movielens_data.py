@@ -7,22 +7,46 @@ import networkx as nx
 
 def load_data_ml100k():
     """Load the movielens files in and return as pds."""
-    movies = pd.read_csv('../data/ml-100k/movies.csv', sep=',')
-    ratings = pd.read_csv('../data/ml-100k/ratings.csv', sep=',')
+    ratings = pd.read_csv('../data/ml-100k/u.data', sep='\t',
+                          header=None, index_col=False,
+                          names=['userID', 'movieId', 'rating', 'timestamp'])
 
-    return movies, ratings
+    return ratings
 
 
-def generate_bipartite_graph(movies_frame, ratings_frame):
+def load_data_yahoo():
+    """
+    Load the yahoo-movies dataset as dataframe
+    """
+    ratings = pd.read_csv('../data/yahoo-movies/yahoo-movies.csv', sep=',')
+    return ratings
+
+
+def load_data_comoda():
+    """
+    Load the CoMoDa dataset as a dataframe
+    """
+    ratings = pd.read_csv('../data/CoMoDa.csv', sep=';')
+    return ratings
+
+
+def generate_bipartite_graph(ratings_frame, user_column_name,
+                             item_column_name):
     """Convert the movie data into a user-movie biparte graph."""
 
-    full_data = pd.merge(movies_frame, ratings_frame, on='movieId')
-    full_data['userId'] = 'u' + full_data['userId'].astype(str)
-    full_data['movieId'] = 'm' + full_data['movieId'].astype(str)
+    ratings_frame[user_column_name] = 'u' + \
+        ratings_frame[user_column_name].astype(str)
+    ratings_frame[item_column_name] = 'i' + \
+        ratings_frame[item_column_name].astype(str)
 
     bipartite_graph = nx.Graph()
-    bipartite_graph.add_nodes_from(full_data.userId, bipartite=0)
-    bipartite_graph.add_nodes_from(full_data.movieId, bipartite=1)
+    bipartite_graph.add_nodes_from(ratings_frame[user_column_name],
+                                   bipartite=0)
+    bipartite_graph.add_nodes_from(ratings_frame[item_column_name],
+                                   bipartite=1)
+    edges = list(zip(ratings_frame[user_column_name],
+                     ratings_frame[item_column_name]))
+    bipartite_graph.add_edges_from(edges)
 
     return bipartite_graph
 
@@ -30,15 +54,15 @@ def generate_bipartite_graph(movies_frame, ratings_frame):
 def generate_bipartite_adjencency_matrix(movies_frame, ratings_frame):
     """Convert movie and ratings frame into an adjencency matrix."""
 
-    movie_ids = list(movies_frame.movieId.unique())
-    user_ids = list(ratings_frame.userId.unique())
+    movie_ids = list(movies_frame.itemID.unique())
+    user_ids = list(ratings_frame.userID.unique())
 
     number_of_movies = len(movie_ids)
     number_of_users = len(user_ids)
 
     user_movie_adj_matrix = np.zeros((number_of_movies, number_of_users))
 
-    for name, group in ratings_frame.groupby(['userId', 'movieId']):
+    for name, group in ratings_frame.groupby(['userID', 'itemID']):
         user_id, movie_id = name
         user_index = user_ids.index(user_id)
         movie_index = movie_ids.index(movie_id)
