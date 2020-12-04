@@ -14,6 +14,20 @@ def load_data_ml100k():
     return ratings
 
 
+def read_ml_kfold_splits(folds=5):
+    train_test_sets = []
+    for i in range(folds):
+        train_set = pd.read_csv(
+            'data/ml-kfold-splits/' + str(i) + '/train.csv',
+            sep=';')
+        test_set = pd.read_csv(
+            'data/ml-kfold-splits/' + str(i) + '/test.csv',
+            sep=';')
+        train_test_sets.append((train_set, test_set))
+
+    return train_test_sets
+
+
 def load_data_yahoo():
     """
     Load the yahoo-movies dataset as dataframe
